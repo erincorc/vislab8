@@ -2,6 +2,39 @@ const margin = ({top: 20, right: 35, bottom: 20, left: 40})
 const width = 800 - margin.left - margin.right
 const height = 800 - margin.top - margin.bottom
 
+function position(d) {
+    const t = d3.select(this);
+    switch (d.side) {
+      case "top":
+        t.attr("text-anchor", "middle").attr("dy", "-0.7em");
+        break;
+      case "right":
+        t.attr("dx", "0.5em")
+          .attr("dy", "0.32em")
+          .attr("text-anchor", "start");
+        break;
+      case "bottom":
+        t.attr("text-anchor", "middle").attr("dy", "1.4em");
+        break;
+      case "left":
+        t.attr("dx", "-0.5em")
+          .attr("dy", "0.32em")
+          .attr("text-anchor", "end");
+        break;
+    }
+  }
+
+  function halo(text) {
+    text
+      .select(function() {
+        return this.parentNode.insertBefore(this.cloneNode(true), this);
+      })
+      .attr("fill", "none")
+      .attr("stroke", "white")
+      .attr("stroke-width", 4)
+      .attr("stroke-linejoin", "round");
+  }
+
 d3.csv('driving.csv', d3.autoType).then(data => {
 
     console.log(data)
@@ -36,11 +69,17 @@ d3.csv('driving.csv', d3.autoType).then(data => {
         .tickFormat(d3.format("$.2f"))
 
     svg.append("g")
+        .attr("class", "x-axis")
         .attr("transform", `translate(0, ${height})`)
-        .call(xAxis)
+    //    .call(xAxis)
 
     svg.append("g")
-        .call(yAxis)
+        .attr("class", "y-axis")
+    //    .call(yAxis)
+
+    let yAxisGroup = svg.select(".y-axis").call(yAxis)
+    let xAxisGroup = svg.select(".x-axis").call(xAxis)
+
 
     // CREATE CIRCLES
     let circs = svg.append("g")
@@ -54,13 +93,36 @@ d3.csv('driving.csv', d3.autoType).then(data => {
     const label = svg.append("g")
         .attr("font-family", "sans-serif")
         .attr("font-size", 10)
-        .selectAll("g")
+        .selectAll("text")
         .data(data)
         .join("g")
         .attr("transform", d => `translate(${xScale(d.miles)},${yScale(d.gas)})`)
-        .attr("opacity", 0)
+        .append("text")
+        .text(data => data.year)
+        .each(position)
+        .call(halo)
 
-    label.append("text")
-        .text(d => d.year)
+        xAxisGroup.select(".domain").remove()
+        yAxisGroup.select(".domain").remove()
+
+        yAxisGroup.selectAll(".tick line")
+            .clone()
+            .attr("x2", width)
+            .attr("stroke-opacity", 0.1) // make it transparent 
+
+        xAxisGroup.selectAll(".tick line")
+            .clone()
+            .attr("y2", -height)
+            .attr("stroke-opacity", 0.1) // make it transparent 
+
+        xAxisGroup.call(g=>
+            g.append("text")
+              .attr("x", width-10)
+              .attr("y", -10)
+              .text("Cost per gallon")
+              .each(position)
+              .call(halo) // optional halo effect
+        )
+
     })
 
