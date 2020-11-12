@@ -71,11 +71,9 @@ d3.csv('driving.csv', d3.autoType).then(data => {
     svg.append("g")
         .attr("class", "x-axis")
         .attr("transform", `translate(0, ${height})`)
-    //    .call(xAxis)
 
     svg.append("g")
         .attr("class", "y-axis")
-    //    .call(yAxis)
 
     let yAxisGroup = svg.select(".y-axis").call(yAxis)
     let xAxisGroup = svg.select(".x-axis").call(xAxis)
@@ -115,14 +113,32 @@ d3.csv('driving.csv', d3.autoType).then(data => {
             .attr("y2", -height)
             .attr("stroke-opacity", 0.1) // make it transparent 
 
-        xAxisGroup.call(g=>
-            g.append("text")
-              .attr("x", width-10)
-              .attr("y", -10)
-              .text("Cost per gallon")
-              .each(position)
-              .call(halo) // optional halo effect
-        )
+        svg.append("text")
+            .attr('x', 120)
+            .attr('y', 6)
+            .attr("font-weight", "bold")
+            .attr("text-anchor", "end")
+            .text("Cost per gallon")
 
+        svg.append("text")
+            .attr('x', 750)
+            .attr('y', 750)
+            .attr("font-weight", "bold")
+            .attr("text-anchor", "end")
+            .text("Miles per person per year")
+
+        const line = d3.line()
+          //  .curve(d3.curveCatmullRom)
+            .x(data => xScale(data.miles))
+            .y(data => yScale(data.gas))
+
+        svg //.selectAll("line")
+            .append("path")
+            .datum(data)
+            .attr("fill", "none")
+            .attr('stroke', 'black')
+            .attr("stroke-width", 2.5)
+            .attr("d", line);
+    
     })
 
