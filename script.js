@@ -1,6 +1,6 @@
 const margin = ({top: 20, right: 35, bottom: 20, left: 40})
-const width = 800 - margin.left - margin.right
-const height = 800 - margin.top - margin.bottom
+const width = 600 - margin.left - margin.right
+const height = 600 - margin.top - margin.bottom
 
 function position(d) {
     const t = d3.select(this);
