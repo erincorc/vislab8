@@ -37,11 +37,13 @@ function position(d) {
 
 d3.csv('driving.csv', d3.autoType).then(data => {
 
+
     console.log(data)
     let miles = data.map(d => d.miles)
     console.log(miles)
     let prices = data.map(d => d.gas)
     console.log(prices)
+
     
     const svg = d3.select('.chart').append('svg')
         .attr("width", width + margin.left + margin.right)
@@ -114,8 +116,9 @@ d3.csv('driving.csv', d3.autoType).then(data => {
             .attr("stroke-opacity", 0.1) // make it transparent 
 
         svg.append("text")
-            .attr('x', 120)
+            .attr('x', 110)
             .attr('y', 6)
+            .attr("font-size", 14)
             .attr("font-weight", "bold")
             .attr("text-anchor", "end")
             .text("Cost per gallon")
@@ -123,14 +126,21 @@ d3.csv('driving.csv', d3.autoType).then(data => {
         svg.append("text")
             .attr('x', 750)
             .attr('y', 750)
+            .attr("font-size", 14)
             .attr("font-weight", "bold")
             .attr("text-anchor", "end")
             .text("Miles per person per year")
 
         const line = d3.line()
-          //  .curve(d3.curveCatmullRom)
+            .curve(d3.curveCatmullRom)
             .x(data => xScale(data.miles))
             .y(data => yScale(data.gas))
+
+       /* length = function length(path) {
+            return d3.create("svg:path").attr("d", path).node().getTotalLength();
+              }
+
+        const l = length(line(data)) */
 
         svg //.selectAll("line")
             .append("path")
@@ -138,7 +148,16 @@ d3.csv('driving.csv', d3.autoType).then(data => {
             .attr("fill", "none")
             .attr('stroke', 'black')
             .attr("stroke-width", 2.5)
-            .attr("d", line);
+            .attr("d", line)
+       /*     .transition()
+            .duration(5000)
+            .ease(d3.easeLinear)
+            .attr("stroke-dasharray", `${l},${l}`) 
+
+
+         label.transition()
+            .delay((d, i) => length(line(data.slice(0, i + 1))) / l * (5000 - 125))
+            .attr("opacity", 1); */
     
     })
 
