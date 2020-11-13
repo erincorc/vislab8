@@ -124,8 +124,8 @@ d3.csv('driving.csv', d3.autoType).then(data => {
             .text("Cost per gallon")
 
         svg.append("text")
-            .attr('x', 750)
-            .attr('y', 750)
+            .attr('x', width-10)
+            .attr('y', height-10)
             .attr("font-size", 14)
             .attr("font-weight", "bold")
             .attr("text-anchor", "end")
@@ -160,4 +160,3 @@ d3.csv('driving.csv', d3.autoType).then(data => {
             .attr("opacity", 1); */
     
     })
-
